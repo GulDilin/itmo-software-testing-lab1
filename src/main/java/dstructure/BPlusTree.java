@@ -38,7 +38,7 @@ public class BPlusTree {
     }
 
     public boolean hasKey(Integer key) {
-        return getAllKeys().stream().allMatch(it -> it.equals(key));
+        return getAllKeys().stream().anyMatch(it -> it.equals(key));
     }
 
     public Node findFirstLeaf() {
