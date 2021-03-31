@@ -103,10 +103,6 @@ public class BPlusTree {
         this.addChildrenToNode(target.getParent(), newNode);
     }
 
-    private void splitRoot() {
-
-    }
-
     private void splitAndInsert(Node node, int value) {
         Node rightNode = node.split();
         rightNode.addKey(value);
