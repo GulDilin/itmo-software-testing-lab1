@@ -14,27 +14,27 @@ public class BPlusTree {
         this.root = new Node(maxKeys);
     }
 
-    public Node searchNode(Integer key) {
-        return searchNode(key, this.root);
+    public Node findNode(Integer key) {
+        return findNode(key, this.root);
     }
 
-    public Node searchNode(Integer key, Node node) {
+    public Node findNode(Integer key, Node node) {
         if (node.isLeaf()) return node;
 
         ArrayList<Integer> keys = node.getKeys();
         ArrayList<Node> children = node.getChildren();
 
         if (key <= keys.get(0)) {
-            return searchNode(key, children.get(0));
+            return findNode(key, children.get(0));
         }
 
         int size = keys.size();
         for (int i = 1; i < size; i++) {
             if (key >= keys.get(i) && key <= keys.get(i + 1)) {
-                return searchNode(key, children.get(i));
+                return findNode(key, children.get(i));
             }
         }
-        return searchNode(key, children.get(size - 1));
+        return findNode(key, children.get(size - 1));
     }
 
     public boolean hasKey(Integer key) {
@@ -104,7 +104,7 @@ public class BPlusTree {
     }
 
     public void add(Integer value) {
-        Node found = searchNode(value);
+        Node found = findNode(value);
         if (found.addKey(value)) return;
         this.splitAndInsert(found, value);
     }
