@@ -162,27 +162,6 @@ class Node {
         return this.children.add(node);
     }
 
-
-
-//    public Node addKey(Integer key) {
-////        if (!canAddKey()) return this.parent;
-////        return this.keys.add(key);
-//
-//        if (canAddKey()) {
-//            this.keys.add(key);
-//            return this;
-//        }
-//
-//        Node newNode = new Node(this.maxKeys);
-//        int size = this.keys.size();
-//        int halfSize = (int) Math.ceil(size / 2D);
-//        for (int i = 0; i < halfSize; i++) {
-//            newNode.keys.add(this.keys.removeLast());
-//        }
-//        return this.parent.addKey(this.keys.getFirst());
-//
-//    }
-
     public void moveKeysToNode(Node node, int amount) {
         while (keys.size() > amount) {
             node.getKeys().add(keys.remove(keys.size() - 1));
