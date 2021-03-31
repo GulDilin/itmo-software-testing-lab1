@@ -117,7 +117,7 @@ public class BPlusTree {
 
     public void add(Integer value) {
         Node found = findNode(value);
-        if (found.addKey(value)) {
+        if (found.canAddKey() && found.addKey(value)) {
             this.saveHistoryPoint();
             return;
         }
@@ -135,12 +135,14 @@ public class BPlusTree {
 
     private void addChildrenToNode(Node target, Node nodeToAdd) {
         if (
+                target.canAddKey() &&
                 target.addKey(nodeToAdd.getKeys().get(0)) &&
+                target.canAddChildren() &&
                 target.addChildren(nodeToAdd)
         ) {
             return;
         }
-        Node newNode = target.split();
+        Node newNode = target.addChildAndSplit(nodeToAdd);
         if (target.isRoot()) {
             this.createNewRoot(target, newNode);
             return;
@@ -149,8 +151,7 @@ public class BPlusTree {
     }
 
     private void splitAndInsert(Node node, int value) {
-        Node rightNode = node.split();
-        rightNode.addKey(value);
+        Node rightNode = node.addKeyAndSplit(value);
         if (!node.isRoot()) {
             this.addChildrenToNode(node.getParent(), rightNode);
         } else {
@@ -194,18 +195,18 @@ class Node {
     }
 
     public boolean addKey(Integer key) {
-        if (!canAddKey()) return false;
-        for (int i = 0; i < keys.size(); i++) {
-            if (key <= keys.get(i)) {
+        int i;
+        for (i = 0; i < keys.size(); i++) {
+            if (key < keys.get(i)) {
                 keys.add(i, key);
                 return true;
             }
         }
-        return this.keys.add(key);
+        this.keys.add(i, key);
+        return true;
     }
 
     public boolean addChildren(Node node) {
-        if (!canAddChildren()) return false;
         node.setParent(this);
         if (children.size() == 0) {
             return this.children.add(node);
@@ -232,13 +233,13 @@ class Node {
 
     public void moveLastKeysToNode(Node node, int amount) {
         for (int i = 0; i < amount && keys.size() > 0; i++) {
-            node.getKeys().add(keys.remove(keys.size() - 1));
+            node.getKeys().add(0, keys.remove(keys.size() - 1));
         }
     }
 
     public void moveLastChildrenToNode(Node node, int amount) {
         for (int i = 0; i < amount && children.size() > 0; i++) {
-            node.getChildren().add(children.remove(children.size() - 1));
+            node.getChildren().add(0, children.remove(children.size() - 1));
         }
     }
 
@@ -247,6 +248,17 @@ class Node {
         this.moveLastKeysToNode(node, Math.floorDiv(keys.size(), 2));
         this.moveLastChildrenToNode(node, Math.floorDiv(children.size(), 2));
         return node;
+    }
+
+    public Node addKeyAndSplit(int key) {
+        this.addKey(key);
+        return this.split();
+    }
+
+    public Node addChildAndSplit(Node node) {
+        this.addKey(node.getKeys().get(0));
+        this.addChildren(node);
+        return this.split();
     }
 
     public ArrayList<Integer> getKeys() {
