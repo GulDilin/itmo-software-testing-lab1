@@ -24,17 +24,13 @@ public class BPlusTree {
         ArrayList<Integer> keys = node.getKeys();
         ArrayList<Node> children = node.getChildren();
 
-        if (key <= keys.get(0)) {
-            return findNode(key, children.get(0));
-        }
-
         int size = keys.size();
-        for (int i = 1; i < size; i++) {
-            if (key >= keys.get(i) && key <= keys.get(i + 1)) {
+        for (int i = 0; i < size; i++) {
+            if (key <= keys.get(i)) {
                 return findNode(key, children.get(i));
             }
         }
-        return findNode(key, children.get(size - 1));
+        return findNode(key, children.get(size));
     }
 
     public boolean hasKey(Integer key) {
@@ -93,7 +89,7 @@ public class BPlusTree {
         stringBuilder.append(keysString);
 
         if (!node.isLeaf()) {
-            stringBuilder.append(";");
+            stringBuilder.append(delimiter);
             String childrenString = node.getChildren().stream()
                     .map(it -> toNodeString(it, delimiter, prefix, postfix))
                     .collect(Collectors.joining(delimiter));
@@ -111,15 +107,16 @@ public class BPlusTree {
 
     private void createNewRoot(Node left, Node right) {
         Node newRoot = new Node(this.maxKeys);
+        newRoot.addKey(right.getKeys().get(0));
         newRoot.addChildren(left);
         newRoot.addChildren(right);
-        newRoot.addKey(right.getKeys().get(0));
         this.root = newRoot;
     }
 
     private void addChildrenToNode(Node target, Node nodeToAdd) {
-        if (target.addChildren(nodeToAdd) &&
-                target.addKey(nodeToAdd.getKeys().get(0))
+        if (
+                target.addKey(nodeToAdd.getKeys().get(0)) &&
+                target.addChildren(nodeToAdd)
         ) {
             return;
         }
@@ -174,34 +171,57 @@ class Node {
 
     public boolean addKey(Integer key) {
         if (!canAddKey()) return false;
+        for (int i = 0; i < keys.size(); i++) {
+            if (key <= keys.get(i)) {
+                keys.add(i, key);
+                return true;
+            }
+        }
         return this.keys.add(key);
     }
 
     public boolean addChildren(Node node) {
         if (!canAddChildren()) return false;
         node.setParent(this);
-        if (children.size() > 0) {
-            children.get(children.size() - 1).setNext(node);
+        if (children.size() == 0) {
+            return this.children.add(node);
         }
+
+        int key = node.keys.get(0);
+        if (key < keys.get(0)) {
+            node.setNext(children.get(0));
+            children.add(0, node);
+            return true;
+        }
+        int i;
+        for (i = 1; i < keys.size(); i++) {
+            if (key <= keys.get(i)) {
+                children.get(i - 1).setNext(node);
+                node.setNext(children.get(i));
+                keys.add(i, key);
+                return true;
+            }
+        }
+        children.get(i - 1).setNext(node);
         return this.children.add(node);
     }
 
-    public void moveKeysToNode(Node node, int amount) {
-        while (keys.size() > amount) {
+    public void moveLastKeysToNode(Node node, int amount) {
+        for (int i = 0; i < amount && keys.size() > 0; i++) {
             node.getKeys().add(keys.remove(keys.size() - 1));
         }
     }
 
-    public void moveChildrenToNode(Node node, int amount) {
-        while (children.size() > amount) {
+    public void moveLastChildrenToNode(Node node, int amount) {
+        for (int i = 0; i < amount && children.size() > 0; i++) {
             node.getChildren().add(children.remove(children.size() - 1));
         }
     }
 
     public Node split() {
-        Node node = new Node(this.maxKeys);
-        this.moveKeysToNode(node, Math.floorDiv(this.keys.size(), 2));
-        this.moveChildrenToNode(node, Math.floorDiv(this.children.size(), 2));
+        Node node = new Node(maxKeys);
+        this.moveLastKeysToNode(node, Math.floorDiv(keys.size(), 2));
+        this.moveLastChildrenToNode(node, Math.floorDiv(children.size(), 2));
         return node;
     }
 
