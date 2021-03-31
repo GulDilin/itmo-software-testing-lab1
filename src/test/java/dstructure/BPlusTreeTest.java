@@ -35,29 +35,29 @@ public class BPlusTreeTest {
 
     @ParameterizedTest(name = "Leafs of array ({0})")
     @CsvFileSource(resources = "bplustree_test_leafs.csv")
-    void leafTest (String arrayText, String expected) {
-        int[] array = Arrays.stream(arrayText.replaceAll(" ", "").split(";"))
+    void leafTest (String input, String expected) {
+        int[] array = Arrays.stream(input.replaceAll(" ", "").split(";"))
                 .mapToInt(Integer::parseInt)
                 .toArray();
         BPlusTree bPlusTree = new BPlusTree(maxKeys);
         Arrays.stream(array).forEach(bPlusTree::add);
         String actual = bPlusTree.toLeafString();
-        System.out.printf("expected = %20s | input = %20s | actual = %20s\n",
-                expected, arrayText, actual);
-        assertEquals(arrayText, actual);
+        System.out.printf("expected = %30s | actual = %30s | input = %30s\n",
+                expected, actual, input);
+        assertEquals(expected, actual);
     }
 
     @ParameterizedTest(name = "Keys of array ({0})")
     @CsvFileSource(resources = "bplustree_test_keys.csv")
-    void keysTest (String arrayText, String expected) {
-        int[] array = Arrays.stream(arrayText.replaceAll(" ", "").split(";"))
+    void keysTest (String input, String expected) {
+        int[] array = Arrays.stream(input.replaceAll(" ", "").split(";"))
                 .mapToInt(Integer::parseInt)
                 .toArray();
         BPlusTree bPlusTree = new BPlusTree(maxKeys);
         Arrays.stream(array).forEach(bPlusTree::add);
         String actual = bPlusTree.toNodeString();
-        System.out.printf("expected = %20s | input = %20s | actual = %20s\n",
-                expected, arrayText, actual);
-        assertEquals(arrayText, actual);
+        System.out.printf("expected = %30s | actual = %30s | input = %30s\n",
+                expected, actual, input);
+        assertEquals(expected, actual);
     }
 }
