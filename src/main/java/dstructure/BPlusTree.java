@@ -8,10 +8,20 @@ import java.util.stream.Collectors;
 public class BPlusTree {
     private Node root;
     private final int maxKeys;
+    private final boolean saveHistory;
+    private List<String> history;
 
     public BPlusTree(int maxKeys) {
+        this(maxKeys, false);
+    }
+
+    public BPlusTree(int maxKeys, boolean saveHistory) {
         this.maxKeys = maxKeys;
         this.root = new Node(maxKeys);
+        this.saveHistory = saveHistory;
+        if (saveHistory) {
+            history = new LinkedList<>();
+        }
     }
 
     public Node findNode(Integer key) {
@@ -99,10 +109,20 @@ public class BPlusTree {
         return stringBuilder.toString();
     }
 
+    public String toHistoryString() {
+        if (!saveHistory) throw new IllegalStateException("History saving is disabled");
+        if (history.size() == 0) return "";
+        return String.join("\n", history);
+    }
+
     public void add(Integer value) {
         Node found = findNode(value);
-        if (found.addKey(value)) return;
+        if (found.addKey(value)) {
+            this.saveHistoryPoint();
+            return;
+        }
         this.splitAndInsert(found, value);
+        this.saveHistoryPoint();
     }
 
     private void createNewRoot(Node left, Node right) {
@@ -138,6 +158,10 @@ public class BPlusTree {
         }
     }
 
+    private void saveHistoryPoint() {
+        if (!saveHistory) return;
+        history.add(toNodeString());
+    }
 }
 
 class Node {
