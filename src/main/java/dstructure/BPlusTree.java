@@ -128,8 +128,8 @@ public class BPlusTree {
     private void createNewRoot(Node left, Node right) {
         Node newRoot = new Node(this.maxKeys);
         newRoot.addKey(right.getKeys().get(0));
-        newRoot.addChildren(left);
-        newRoot.addChildren(right);
+        newRoot.addChild(left);
+        newRoot.addChild(right);
         this.root = newRoot;
     }
 
@@ -138,7 +138,7 @@ public class BPlusTree {
                 target.canAddKey() &&
                 target.addKey(nodeToAdd.getKeys().get(0)) &&
                 target.canAddChildren() &&
-                target.addChildren(nodeToAdd)
+                target.addChild(nodeToAdd)
         ) {
             return;
         }
@@ -206,7 +206,7 @@ class Node {
         return true;
     }
 
-    public boolean addChildren(Node node) {
+    public boolean addChild(Node node) {
         node.setParent(this);
         if (children.size() == 0) {
             return this.children.add(node);
@@ -257,7 +257,7 @@ class Node {
 
     public Node addChildAndSplit(Node node) {
         this.addKey(node.getKeys().get(0));
-        this.addChildren(node);
+        this.addChild(node);
         return this.split();
     }
 
