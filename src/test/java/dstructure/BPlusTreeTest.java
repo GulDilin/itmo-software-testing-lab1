@@ -39,11 +39,15 @@ public class BPlusTreeTest {
         int[] array = Arrays.stream(input.replaceAll(" ", "").split(";"))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        BPlusTree bPlusTree = new BPlusTree(maxKeys);
+        BPlusTree bPlusTree = new BPlusTree(maxKeys, true);
         Arrays.stream(array).forEach(bPlusTree::add);
         String actual = bPlusTree.toLeafString();
         System.out.printf("expected = %30s | actual = %30s | input = %30s\n",
                 expected, actual, input);
+        if (!expected.equals(actual)) {
+            System.out.println("History:\n");
+            System.out.println(bPlusTree.toHistoryString());
+        }
         assertEquals(expected, actual);
     }
 
