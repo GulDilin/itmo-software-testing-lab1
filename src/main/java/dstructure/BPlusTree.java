@@ -219,10 +219,10 @@ class Node {
         }
         int i;
         for (i = 1; i < keys.size(); i++) {
-            if (key <= keys.get(i)) {
+            if (key < keys.get(i)) {
                 children.get(i - 1).setNext(node);
                 node.setNext(children.get(i));
-                keys.add(i, key);
+                children.add(i, node);
                 return true;
             }
         }
