@@ -116,8 +116,8 @@ public class BPlusTree {
 }
 
 class Node {
-    private ArrayList<Integer> keys;
-    private ArrayList<Node> children;
+    private final ArrayList<Integer> keys;
+    private final ArrayList<Node> children;
     private Node parent;
     private Node next;
     private final int maxKeys;
