@@ -67,12 +67,40 @@ public class BPlusTree {
                 .collect(Collectors.toList());
     }
 
-    public String toLeafsString() {
-        return toLeafsString(", ");
+    public String toLeafString() {
+        return toLeafString("; ");
     }
 
-    public String toLeafsString(String delimiter) {
+    public String toLeafString(String delimiter) {
         return getAllKeys().stream().map(Object::toString).collect(Collectors.joining(delimiter));
+    }
+
+    public String toNodeString() {
+        return toNodeString(root, "; ", "[", "]");
+    }
+
+    public String toNodeString(String delimiter, String prefix, String postfix) {
+        return toNodeString(root, delimiter, prefix, postfix);
+    }
+
+    public String toNodeString(Node node, String delimiter, String prefix, String postfix) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(prefix);
+
+        String keysString = node.getKeys().stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(delimiter));
+        stringBuilder.append(keysString);
+
+        if (!node.isLeaf()) {
+            stringBuilder.append(";");
+            String childrenString = node.getChildren().stream()
+                    .map(it -> toNodeString(it, delimiter, prefix, postfix))
+                    .collect(Collectors.joining(delimiter));
+            stringBuilder.append(childrenString);
+        }
+        stringBuilder.append(postfix);
+        return stringBuilder.toString();
     }
 
     public void add(Integer value) {
@@ -91,7 +119,7 @@ public class BPlusTree {
 
     private void addChildrenToNode(Node target, Node nodeToAdd) {
         if (target.addChildren(nodeToAdd) &&
-            target.addKey(nodeToAdd.getKeys().get(0))
+                target.addKey(nodeToAdd.getKeys().get(0))
         ) {
             return;
         }
