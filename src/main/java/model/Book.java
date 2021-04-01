@@ -10,7 +10,7 @@ public class Book {
     }
 
     public boolean hasPage(int pageNumber) {
-        return pageNumber < pagesCount;
+        return 0 < pageNumber && pageNumber <= pagesCount;
     }
 
     public int getPagesCount() {
@@ -19,5 +19,13 @@ public class Book {
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "pagesCount=" + pagesCount +
+                ", title='" + title + '\'' +
+                '}';
     }
 }
