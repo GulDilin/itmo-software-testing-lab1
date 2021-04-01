@@ -19,6 +19,7 @@ public class Mechanism implements Movable {
     @Override
     public boolean doMove(Position p) {
         if (this.canMove(p)) {
+            this.power -= this.position.getDistance(p);
             this.position = p;
             System.out.println(this.toString() + " moves to " + p.toString());
             return true;
