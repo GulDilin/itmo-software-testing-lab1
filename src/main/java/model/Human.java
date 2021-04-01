@@ -32,6 +32,7 @@ public class Human implements Movable {
     @Override
     public boolean doMove(Position p) {
         if (this.canMove(p)) {
+            this.endurance -= this.position.getDistance(p);
             this.position = p;
             System.out.println(this.toString() + " change position to " + p.toString());
             return true;
@@ -44,6 +45,30 @@ public class Human implements Movable {
     @Override
     public boolean canMove(Position p) {
         return this.endurance > this.position.getDistance(p);
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getEndurance() {
+        return endurance;
+    }
+
+    public void setEndurance(int endurance) {
+        this.endurance = endurance;
     }
 
     @Override
