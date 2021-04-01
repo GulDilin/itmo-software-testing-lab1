@@ -4,14 +4,10 @@ import java.util.ArrayList;
 
 public class Area {
     private ArrayList<Movable> movables;
-    private int sizeX;
-    private int sizeY;
     private int maxMovables;
 
 
-    public Area(int sizeX, int sizeY, int maxMovables) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+    public Area(int maxMovables) {
         this.maxMovables = maxMovables;
     }
 
