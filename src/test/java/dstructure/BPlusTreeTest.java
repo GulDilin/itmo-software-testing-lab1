@@ -1,5 +1,6 @@
 package dstructure;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BPlusTreeTest {
     private final int maxKeys = 3;
+    private BPlusTree bPlusTree;
+
+    @BeforeEach
+    void setup() {
+        bPlusTree = new BPlusTree(maxKeys, true);
+    }
 
     @ParameterizedTest(name = "Contains array ({0})")
     @CsvFileSource(resources = "bplustree_test_has_keys.csv")
@@ -21,7 +28,6 @@ public class BPlusTreeTest {
         int[] array = Arrays.stream(arrayText.replaceAll(" ", "").split(";"))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        BPlusTree bPlusTree = new BPlusTree(maxKeys);
         Arrays.stream(array).forEach(bPlusTree::add);
         int size = array.length;
         boolean[] trueArray = new boolean[size];
@@ -39,7 +45,6 @@ public class BPlusTreeTest {
         int[] array = Arrays.stream(input.replaceAll(" ", "").split(";"))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        BPlusTree bPlusTree = new BPlusTree(maxKeys, true);
         Arrays.stream(array).forEach(bPlusTree::add);
         String actual = bPlusTree.toLeafString();
         System.out.printf("expected = %30s | actual = %30s | input = %30s\n",
@@ -57,7 +62,6 @@ public class BPlusTreeTest {
         int[] array = Arrays.stream(input.replaceAll(" ", "").split(";"))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        BPlusTree bPlusTree = new BPlusTree(maxKeys, true);
         Arrays.stream(array).forEach(bPlusTree::add);
         String actual = bPlusTree.toNodeString();
         System.out.printf("expected = %30s | actual = %30s | input = %30s\n",
