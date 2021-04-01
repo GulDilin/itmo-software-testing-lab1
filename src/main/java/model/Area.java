@@ -9,6 +9,7 @@ public class Area {
 
     public Area(int maxMovables) {
         this.maxMovables = maxMovables;
+        this.movables = new ArrayList<>();
     }
 
     public boolean addMovable(Movable m) {
