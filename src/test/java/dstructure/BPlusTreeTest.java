@@ -18,7 +18,7 @@ public class BPlusTreeTest {
     private BPlusTree bPlusTree;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         bPlusTree = new BPlusTree(maxKeys, true);
     }
 
